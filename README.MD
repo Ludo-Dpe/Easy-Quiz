@@ -57,6 +57,6 @@ Accédez à l'application dans votre navigateur à l'adresse http://localhost:80
 
 Consultez ce **tutoriel vidéo** pour une démonstration visuelle du projet Easy Quiz
 
-[![Tutoriel Vidéo](https://maroc-diplomatique.net/wp-content/uploads/2023/03/Image3-2.jpg)](https://youtu.be/sTdjMmZpM_o){:target="_blank"}
+[![Tutoriel Vidéo](https://maroc-diplomatique.net/wp-content/uploads/2023/03/Image3-2.jpg)](https://youtu.be/sTdjMmZpM_o)
 .
 
