@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\QuestionRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\QuestionRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
 class Question
@@ -13,15 +14,18 @@ class Question
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['quiz:read', 'quizResult:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
     private ?Quiz $quiz = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['quiz:read', 'quizResult:read'])]
     private ?string $title = null;
 
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Answer::class)]
+    #[Groups(['quiz:read', 'quizResult:read'])]
     private Collection $answers;
 
     public function __construct(?string $title = null)

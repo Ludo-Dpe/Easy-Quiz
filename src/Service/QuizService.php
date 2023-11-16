@@ -24,6 +24,7 @@ class QuizService
         foreach ($quizData['questions'] as $questionData) {
             $question = new Question($questionData['question']);
             $correctAnswer = $questionData['answer'];
+            $quiz->addQuestion($question);
 
             $this->em->persist($question);
 
@@ -34,7 +35,6 @@ class QuizService
                 $this->em->persist($answer);
             }
 
-            $quiz->addQuestion($question);
         }
         $this->quizRepo->save($quiz, true);
         

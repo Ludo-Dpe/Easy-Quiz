@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use OpenAI\Client;
 use App\Entity\Quiz;
 use App\Service\QuizService;
-use OpenAI\Client;
+use App\Service\QuizResultService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,13 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class QuizController extends AbstractController
 {
     public function __construct(
-        private readonly QuizService $quizService
+        private readonly QuizService $quizService,
+        private readonly QuizResultService $quizResultService
     )
     {
 
     }
 
-    #[Route('/quizzes', name: 'app_quiz_add', methods: ['POST'])]
+    #[Route('/quizzes', name: 'app_quizzes_add', methods: ['POST'])]
     public function add(Client $client, Request $request): Response
     {
         if (!$request->isXmlHttpRequest()) {
@@ -59,11 +61,28 @@ class QuizController extends AbstractController
         ]);
     }
 
-    #[Route('/quizzes', name: 'app_quiz_show', methods: ['GET', 'POST'])]
-    public function show(?Quiz $quiz): Response
+    #[Route('/quizzes/{id}', name: 'app_quizzes_show', methods: ['GET', 'POST'])]
+    public function show(?Quiz $quiz, Request $request): Response
     {
         if (!$quiz) {
             return $this->redirectToRoute('app_home');
+        }
+
+        if ($request->isXmlHttpRequest() && $request->isMethod(Request::METHOD_POST)) {
+            $body = json_decode($request->getContent(), true);
+
+
+            if(!isset($body['quizResult'])) {
+                return $this->json([
+                    'error' => 'Missing quizResult'
+                ]);
+            }
+            $quizResult = $this->quizResultService->add($quiz, $body['quizResult']);
+            return $this->json([
+                'quizResult' => [
+                    'id' => $quizResult->getId()
+                ]
+            ]);
         }
         return $this->render('quiz/show.html.twig', [
             'quiz' => $quiz

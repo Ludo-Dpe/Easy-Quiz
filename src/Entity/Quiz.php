@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\QuizRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\QuizRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: QuizRepository::class)]
 class Quiz
@@ -13,22 +14,25 @@ class Quiz
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['quiz:list', 'quiz:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['quiz:list', 'quiz:read', 'quizResult:read'])]
     private ?string $title = null;
 
     #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: Question::class)]
+    #[Groups(['quiz:read', 'quizResult:read'])]
     private Collection $questions;
 
     #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: QuizResult::class)]
     private Collection $quizResults;
 
-    public function __construct(string $title)
+    public function __construct(?string $title = null)
     {
         $this->questions = new ArrayCollection();
-        $this->title = $title;
         $this->quizResults = new ArrayCollection();
+        $this->title = $title;
     }
 
     public function getId(): ?int
